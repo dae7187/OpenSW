@@ -24,6 +24,10 @@ def mouse_callback(event, x, y, flags, param):
             print(f"눈과 눈 사이의 거리를 측정했습니다. 값: {eye_distance_px} 픽셀")
             # 얼굴과 눈 간의 비율 계산 및 출력
             print(f"얼굴과 눈 간의 비율: {face_width_px / eye_distance_px:.2f}")
+            if (face_width_px / eye_distance_px>1.4 and face_width_px / eye_distance_px<1.8):
+                print("눈의 비율이 좋습니다.")
+            else:
+                print("이상적인 비율이 아닙니다.")
 
 def calculate_distance(point1, point2):
     return ((point2[0] - point1[0])**2 + (point2[1] - point1[1])**2)**0.5

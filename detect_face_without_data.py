@@ -1,8 +1,11 @@
 import cv2
 import numpy as np
 
+# 분위수 초기화
+quartiles = [None, None, None]
+
 def mouse_callback(event, x, y, flags, param):
-    global point1, point2, point3, point4, selecting, face_width_px, eye_distance_px
+    global point1, point2, point3, point4, selecting, face_width_px, eye_distance_px, ratios
 
     if event == cv2.EVENT_LBUTTONDOWN:
         if selecting == 0:
@@ -27,6 +30,8 @@ def mouse_callback(event, x, y, flags, param):
             ratio = face_width_px / eye_distance_px
             print(f"얼굴과 눈 간의 비율: {ratio:.2f}")
             # 얼굴과 눈 간의 비율을 기반으로 한 분류
+            if quartiles[0] is None:
+                quartiles[0] = np.percentile(ratios, 25)
             classify_and_print(ratio)
 
 def calculate_distance(point1, point2):
@@ -49,32 +54,34 @@ def classify_and_print(ratio):
 def manual_measurements(image_path):
     global point1, point2, point3, point4, selecting, face_width_px, eye_distance_px, ratios
 
-    point1, point2, point3, point4 = (-1, -1), (-1, -1), (-1, -1), (-1, -1)
-    selecting = 0
-    face_width_px, eye_distance_px = 0, 0
-    ratios = []
+    # 이미지 경로를 지정합니다.
+    image_path = r"C:\Users\dae71\OneDrive\문서\GitHub\OpenSource_SW\OIP.jpeg"
 
+    # 이미지를 읽어들입니다.
     image = cv2.imread(image_path)
 
+    # 이미지를 화면에 표시합니다.
     cv2.imshow('Measurements', image)
+
+    # 마우스 이벤트 처리를 시작합니다.
     cv2.setMouseCallback('Measurements', mouse_callback)
 
+    # 키보드 입력을 기다리지 않고 계속 실행합니다.
     while True:
+        # 이미지를 업데이트합니다.
         display_image = image.copy()
-
         if selecting == 1:
             cv2.rectangle(display_image, point1, (point2[0], point2[1]), (0, 255, 0), 2)
-        elif selecting == 3:
-            cv2.rectangle(display_image, point3, (point4[0], point4[1]), (0, 255, 0), 2)
 
+        # 이미지를 다시 표시합니다.
         cv2.imshow('Measurements', display_image)
 
-        key = cv2.waitKey(1) & 0xFF
+        # 마우스 이벤트가 발생했는지 확인합니다.
+        key = cv2.waitKey(0) & 0xFF
         if key == 27:
             break
 
-    cv2.destroyAllWindows()
+        # 이미지를 업데이트합니다.
+        display_image = image.copy()
 
-# 이미지 파일 경로를 지정하여 수동으로 측정
-image_path = 'OIP.jpg'  # 실제 이미지 파일 경로로 변경해야 합니다.
-manual_measurements(image_path)
+        # 마우스 이벤트가 발생하지 않았다면, 분류 결과
