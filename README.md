@@ -1,7 +1,7 @@
 # OpenSource_SW
 ---
 Team Name : 똑똑 거기 누구 옾소
-Member : 이동원 / 홍대웅 / 남재호 / 이서준
+Member : 이*원 / 홍대웅 / 남*호 / 이*준
 ---
 - Title : Detect Beautiful Eye's Rate
 - Package : OpenCV
